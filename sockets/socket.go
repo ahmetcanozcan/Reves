@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"crypto/rand"
 	"fmt"
-	"log"
 	"net"
 	sparser "tcpgameserver/sockets/parser"
 )
@@ -47,14 +46,12 @@ func NewSocket(conn *net.Conn) *Socket {
 }
 
 func (s *Socket) initialize(roomName string) {
-	fmt.Println("initializng")
 	room := GetRoom(roomName)
 	room.Sockets.Push(s)
 	s.initialized = true
 }
 
 func (s *Socket) listen() {
-	log.Println("Listening socket...")
 	reader := bufio.NewReader(*s.conn)
 	for {
 		text, err := reader.ReadString('\n')
@@ -62,7 +59,6 @@ func (s *Socket) listen() {
 			continue
 		}
 		name, args, err := sparser.ParseSocketPayload(text)
-		log.Println("Read event : ", name)
 		if err != nil {
 			continue
 		}

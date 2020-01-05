@@ -1,11 +1,10 @@
-package main
+package tcpgameserver
 
 import (
 	"fmt"
 	"log"
 	"net"
 	"tcpgameserver/sockets"
-	sparser "tcpgameserver/sockets/parser"
 )
 
 //Server configuration constans
@@ -14,7 +13,8 @@ const (
 	PORT string = "8080"
 )
 
-func main() {
+//ListenSocket :
+func ListenSocket(cb func(socket *sockets.Socket)) {
 	//creating listener for handling incomming requests
 	listener, err := net.Listen("tcp", HOST+":"+PORT)
 	if err != nil {
@@ -31,16 +31,8 @@ func main() {
 			continue
 		} else {
 			//Handle connection in another thread
-			go handleConnection(conn)
+			socket := sockets.NewSocket(&conn)
+			go cb(socket)
 		}
 	}
-}
-
-func handleConnection(conn net.Conn) {
-	socket := sockets.NewSocket(&conn)
-	socket.On("Hello", func(payload sparser.Payload) {
-		for k, v := range payload {
-			fmt.Println(k, v)
-		}
-	})
 }

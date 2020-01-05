@@ -1,7 +1,5 @@
 package sockets
 
-import "fmt"
-
 //Room : is an abstraction to group sockets
 type Room struct {
 	Name    string
@@ -14,7 +12,6 @@ var rooms []*Room = make([]*Room, 0)
 func GetRoom(name string) *Room {
 	for i, val := range rooms {
 		if val.Name == name {
-			fmt.Println("Room", name, "returned")
 			return rooms[i]
 		}
 	}

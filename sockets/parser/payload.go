@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -29,6 +28,5 @@ func ParseSocketPayload(payload string) (string, Payload, error) {
 		}
 		result[pair[0]] = pair[1]
 	}
-	fmt.Println("Parsing str from", payload, "to", name, result)
 	return name, result, nil
 }
