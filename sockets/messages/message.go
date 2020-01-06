@@ -26,6 +26,12 @@ func NewEmptyMessage() *Message {
 	return &Message{}
 }
 
+//Compile :
+func (m *Message) Compile() string {
+	pstr := m.Body.String()
+	return m.Name + ";" + pstr
+}
+
 //Payload :
 type Payload map[string]string
 
@@ -33,6 +39,15 @@ func (p Payload) String() string {
 	res := ""
 	for k, v := range p {
 		res += k + v
+	}
+	return res
+}
+
+//Compile :
+func (p Payload) Compile() string {
+	res := ""
+	for k, v := range p {
+		res += k + ":" + v + ";"
 	}
 	return res
 }

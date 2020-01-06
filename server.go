@@ -7,20 +7,28 @@ import (
 	"reves/sockets"
 )
 
-//Server configuration constans
-const (
-	HOST string = "localhost"
-	PORT string = "8080"
-)
+//ConfigurationStruct :
+type ConfigurationStruct struct {
+	HOST string
+	PORT string
+}
 
-//ListenSocket :
-func ListenSocket(cb func(socket *sockets.Socket)) {
+//Config :
+var Config *ConfigurationStruct = &ConfigurationStruct{
+	HOST: "localhost",
+	PORT: "8080",
+}
+
+var cb func(*sockets.Socket)
+
+//Start :
+func Start() {
 	//creating listener for handling incomming requests
-	listener, err := net.Listen("tcp", HOST+":"+PORT)
+	listener, err := net.Listen("tcp", Config.HOST+":"+Config.PORT)
 	if err != nil {
-		fmt.Println("Failed to listen port", PORT)
+		fmt.Println("Failed to listen port", Config.PORT)
 	}
-	fmt.Println("Listening port", PORT, "...")
+	fmt.Println("Listening port", Config.PORT, "...")
 	//Close listener when app closed
 	defer listener.Close()
 	for {
@@ -37,4 +45,9 @@ func ListenSocket(cb func(socket *sockets.Socket)) {
 			}()
 		}
 	}
+}
+
+//HandleNewSocket :
+func HandleNewSocket(callback func(socket *sockets.Socket)) {
+	cb = callback
 }

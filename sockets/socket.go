@@ -33,6 +33,11 @@ func (s *Socket) IsOk() bool {
 	return s.initialized
 }
 
+//GetID :
+func (s Socket) GetID() string {
+	return s.id
+}
+
 //NewSocket : Constructor
 func NewSocket(conn *net.Conn) *Socket {
 	s := Socket{
