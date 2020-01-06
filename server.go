@@ -1,10 +1,10 @@
-package tcpgameserver
+package reves
 
 import (
 	"fmt"
 	"log"
 	"net"
-	"tcpgameserver/sockets"
+	"reves/sockets"
 )
 
 //Server configuration constans
@@ -31,8 +31,10 @@ func ListenSocket(cb func(socket *sockets.Socket)) {
 			continue
 		} else {
 			//Handle connection in another thread
-			socket := sockets.NewSocket(&conn)
-			go cb(socket)
+			go func() {
+				socket := sockets.NewSocket(&conn)
+				cb(socket)
+			}()
 		}
 	}
 }

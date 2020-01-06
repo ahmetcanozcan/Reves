@@ -5,24 +5,24 @@ import (
 	"crypto/rand"
 	"fmt"
 	"net"
-	sparser "tcpgameserver/sockets/parser"
+	"reves/sockets/messages"
 )
 
 //Socket : an abstraction for handling tcp connection
 type Socket struct {
-	events      map[string]func(sparser.Payload)
+	events      map[string]func(messages.Payload)
 	id          string
 	conn        *net.Conn
 	initialized bool
 }
 
 //On : Dispatch an event handler to event listener
-func (s *Socket) On(name string, handler func(sparser.Payload)) {
+func (s *Socket) On(name string, handler func(messages.Payload)) {
 	s.events[name] = handler
 }
 
 //Emit : Send payload to client
-func (s *Socket) Emit(name string, payload sparser.Payload) {
+func (s *Socket) Emit(name string, payload messages.Payload) {
 	message := fmt.Sprintf("Name : %s ; %s", name, payload.String())
 	w := bufio.NewWriter(*s.conn)
 	w.WriteString(message)
@@ -36,7 +36,7 @@ func (s *Socket) IsOk() bool {
 //NewSocket : Constructor
 func NewSocket(conn *net.Conn) *Socket {
 	s := Socket{
-		events:      make(map[string]func(sparser.Payload)),
+		events:      make(map[string]func(messages.Payload)),
 		id:          generateSocketID(),
 		conn:        conn,
 		initialized: true,
@@ -58,17 +58,17 @@ func (s *Socket) listen() {
 		if err != nil {
 			continue
 		}
-		name, args, err := sparser.ParseSocketPayload(text)
+		msg, err := messages.NewMessage(text)
 		if err != nil {
 			continue
 		}
-		if name == "Init" {
-			s.initialize(args["roomName"])
+		if msg.Name == "Init" {
+			s.initialize(msg.Body["roomName"])
 			continue
 		}
-		f, ok := s.events[name]
+		f, ok := s.events[msg.Name]
 		if ok && s.IsOk() {
-			f(args)
+			f(msg.Body)
 		} else {
 			fmt.Println("Event name doesn't found")
 		}

@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
-	"tcpgameserver"
-	"tcpgameserver/sockets"
-	sparser "tcpgameserver/sockets/parser"
+	"reves"
+	"reves/sockets"
+	"reves/sockets/messages"
 )
 
 func main() {
 
-	tcpgameserver.ListenSocket(func(socket *sockets.Socket) {
+	reves.ListenSocket(func(socket *sockets.Socket) {
 
-		socket.On("Hello", func(payload sparser.Payload) {
+		socket.On("Hello", func(payload messages.Payload) {
 			for k, v := range payload {
 				fmt.Println(k, v)
 			}
