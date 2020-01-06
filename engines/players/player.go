@@ -1,8 +1,8 @@
 package players
 
 import (
-	"reves/sockets"
-	"reves/sockets/messages"
+	"github.com/ahmetcanozcan/reves/sockets"
+	"github.com/ahmetcanozcan/reves/sockets/messages"
 )
 
 //Player :

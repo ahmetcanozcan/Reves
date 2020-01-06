@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"reves"
-	"reves/engines"
-	"reves/engines/players"
-	"reves/sockets"
-	"reves/sockets/messages"
+
+	"github.com/ahmetcanozcan/reves"
+	"github.com/ahmetcanozcan/reves/engines"
+	"github.com/ahmetcanozcan/reves/engines/players"
+	"github.com/ahmetcanozcan/reves/sockets"
+	"github.com/ahmetcanozcan/reves/sockets/messages"
 )
 
 func main() {

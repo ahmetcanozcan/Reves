@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"reves/sockets"
+
+	"github.com/ahmetcanozcan/reves/sockets"
 )
 
 //ConfigurationStruct :

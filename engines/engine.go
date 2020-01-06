@@ -1,8 +1,9 @@
 package engines
 
 import (
-	"reves/sockets"
 	"time"
+
+	"github.com/ahmetcanozcan/reves/sockets"
 )
 
 //Engine :

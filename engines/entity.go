@@ -1,7 +1,7 @@
 package engines
 
 import (
-	"reves/sockets"
+	"github.com/ahmetcanozcan/reves/sockets"
 )
 
 //Entity :

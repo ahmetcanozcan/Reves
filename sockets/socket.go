@@ -5,7 +5,8 @@ import (
 	"crypto/rand"
 	"fmt"
 	"net"
-	"reves/sockets/messages"
+
+	"github.com/ahmetcanozcan/reves/sockets/messages"
 )
 
 //Socket : an abstraction for handling tcp connection
