@@ -1,6 +1,8 @@
 package players
 
 import (
+	"fmt"
+
 	"github.com/ahmetcanozcan/reves/sockets"
 	"github.com/ahmetcanozcan/reves/sockets/messages"
 )
@@ -22,7 +24,7 @@ func NewPlayer(s *sockets.Socket) *Player {
 //Start :
 func (p *Player) Start() {
 	p.socket.On("KeyPress", func(payload messages.Payload) {
-
+		fmt.Println("W :", payload["W"])
 	})
 }
 

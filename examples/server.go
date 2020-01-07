@@ -12,9 +12,10 @@ import (
 
 func main() {
 
-	reves.Config.PORT = "3001"
+	reves.Config.PORT = "8080"
 
 	sockets.WhenMatchmakingRoomIsFilled(func(r *sockets.Room) {
+		fmt.Println("a MatchMaking room is filled...")
 		engine := engines.NewEngine(r)
 		for _, socket := range r.Sockets {
 			p := players.NewPlayer(socket)

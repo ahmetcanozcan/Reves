@@ -73,7 +73,20 @@ func GetMatchMakingRoom() *Room {
 			return rooms[i]
 		}
 	}
-	return nil
+	createMatchMakingRoom()
+	return GetMatchMakingRoom()
+}
+
+var matchMakingRoomCount int = 0
+
+func createMatchMakingRoom() {
+	r := Room{
+		Name:    "MatchMaking-" + string(matchMakingRoomCount),
+		Sockets: make(SocketList, 0),
+		limit:   2,
+		Type:    MATCHMAKING,
+	}
+	rooms = append(rooms, &r)
 }
 
 //CreateRoom : creates a room with given name
@@ -81,6 +94,7 @@ func CreateRoom(name string, rtype RoomType) {
 	r := Room{
 		Name:    name,
 		Sockets: make(SocketList, 0),
+		limit:   5,
 	}
 	rooms = append(rooms, &r)
 }

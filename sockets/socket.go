@@ -39,22 +39,38 @@ func (s Socket) GetID() string {
 	return s.id
 }
 
+//Join :
+func (s *Socket) Join(name string) {
+	GetRoom(name).AddSocket(s)
+}
+
+//JoinMatchMaking :
+func (s *Socket) JoinMatchMaking() {
+	GetMatchMakingRoom().AddSocket(s)
+}
+
 //NewSocket : Constructor
 func NewSocket(conn *net.Conn) *Socket {
 	s := Socket{
 		events:      make(map[string]func(messages.Payload)),
 		id:          generateSocketID(),
 		conn:        conn,
-		initialized: true,
+		initialized: false,
 	}
 	go s.listen()
 	return &s
 }
 
-func (s *Socket) initialize(roomName string) {
-	room := GetRoom(roomName)
-	room.Sockets.Push(s)
+func (s *Socket) initialize(payload messages.Payload) {
+	val, ok := payload["RoomName"]
+	if ok {
+		s.Join(val)
+	}
 	s.initialized = true
+}
+
+func (s *Socket) matchMaking(payload messages.Payload) {
+	s.JoinMatchMaking()
 }
 
 func (s *Socket) listen() {
@@ -69,7 +85,11 @@ func (s *Socket) listen() {
 			continue
 		}
 		if msg.Name == "Init" {
-			s.initialize(msg.Body["roomName"])
+			s.initialize(msg.Body)
+			continue
+		}
+		if msg.Name == "MatchMaking" {
+			s.matchMaking(msg.Body)
 			continue
 		}
 		f, ok := s.events[msg.Name]

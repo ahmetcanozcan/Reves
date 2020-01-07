@@ -14,10 +14,12 @@ func main() {
 	}
 	ioin := bufio.NewReader(os.Stdin)
 
-	fmt.Fprintf(conn, "Init;roomName:example;\n")
+	fmt.Fprintf(conn, "Init;\n")
 	fmt.Println("sent Init")
 	ioin.ReadLine()
 	fmt.Fprintf(conn, "Hello;from:other-side;asd:asdasd;\n")
 	fmt.Println("sent Hello")
+	fmt.Fprintf(conn, "MatchMaking;\n")
+	fmt.Println("sent MatchMaking")
 	bufio.NewReader(conn).ReadLine()
 }

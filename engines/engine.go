@@ -17,6 +17,7 @@ type Engine struct {
 func NewEngine(room *sockets.Room) *Engine {
 	return &Engine{
 		room: room,
+		UR:   20,
 	}
 }
 
