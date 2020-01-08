@@ -35,6 +35,11 @@ func (m *Message) Compile() string {
 //Payload :
 type Payload map[string]string
 
+//NewPayload :
+func NewPayload() Payload {
+	return make(Payload)
+}
+
 func (p Payload) String() string {
 	res := ""
 	for k, v := range p {

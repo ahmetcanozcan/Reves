@@ -1,15 +1,11 @@
 package engines
 
-import (
-	"github.com/ahmetcanozcan/reves/sockets"
-)
-
 //Entity :
 type Entity interface {
 	Start()
 	Check()
 	Update(int64)
-	Share(room *sockets.Room)
+	Share(PlayerList)
 }
 
 //EntityList :

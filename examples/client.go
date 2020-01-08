@@ -16,10 +16,17 @@ func main() {
 
 	fmt.Fprintf(conn, "Init;\n")
 	fmt.Println("sent Init")
-	ioin.ReadLine()
 	fmt.Fprintf(conn, "Hello;from:other-side;asd:asdasd;\n")
 	fmt.Println("sent Hello")
 	fmt.Fprintf(conn, "MatchMaking;\n")
 	fmt.Println("sent MatchMaking")
-	bufio.NewReader(conn).ReadLine()
+	ioin.ReadLine()
+	fmt.Fprint(conn, "Foo;\n")
+	for {
+		msg, _, err := bufio.NewReader(conn).ReadLine()
+		if err != nil {
+			break
+		}
+		fmt.Println(string(msg))
+	}
 }

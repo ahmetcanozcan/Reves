@@ -24,9 +24,8 @@ func (s *Socket) On(name string, handler func(messages.Payload)) {
 
 //Emit : Send payload to client
 func (s *Socket) Emit(name string, payload messages.Payload) {
-	message := fmt.Sprintf("Name : %s ; %s", name, payload.String())
-	w := bufio.NewWriter(*s.conn)
-	w.WriteString(message)
+	message := fmt.Sprintf("%s;%s\n", name, payload.Compile())
+	fmt.Fprintf(*s.conn, message)
 }
 
 //IsOk : returns the socket complete its pre-communicaion tasks

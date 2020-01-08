@@ -8,17 +8,21 @@ import (
 
 //Engine :
 type Engine struct {
-	room     *sockets.Room
+	players  PlayerList
 	entities EntityList
 	UR       int
 }
 
 //NewEngine :
 func NewEngine(room *sockets.Room) *Engine {
-	return &Engine{
-		room: room,
-		UR:   20,
+	room.Type = sockets.GAME
+	e := &Engine{UR: 20, entities: make(EntityList, 0)}
+	e.players = make(PlayerList, 0)
+	for _, socket := range room.Sockets {
+		p := NewPlayer(socket)
+		e.players.Push(p)
 	}
+	return e
 }
 
 //AddEntity :
@@ -34,7 +38,13 @@ func (e *Engine) check() {
 
 func (e *Engine) update(deltaTime int64) {
 	for _, entity := range e.entities {
-		(entity).Update(deltaTime)
+		entity.Update(deltaTime)
+	}
+}
+
+func (e *Engine) share() {
+	for _, entity := range e.entities {
+		entity.Share(e.players)
 	}
 }
 
@@ -50,6 +60,7 @@ func (e *Engine) Start() {
 			e.check()
 			delta := time.Since(start)
 			e.update(delta.Milliseconds())
+			e.share()
 			start = time.Now()
 		}
 	}()
