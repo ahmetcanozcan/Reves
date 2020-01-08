@@ -2,19 +2,20 @@ package sockets
 
 import (
 	"bufio"
-	"crypto/rand"
 	"fmt"
 	"net"
 
+	"github.com/ahmetcanozcan/reves/security"
 	"github.com/ahmetcanozcan/reves/sockets/messages"
 )
 
 //Socket : an abstraction for handling tcp connection
 type Socket struct {
-	events      map[string]func(messages.Payload)
-	id          string
-	conn        *net.Conn
-	initialized bool
+	events          map[string]func(messages.Payload)
+	id              string
+	conn            *net.Conn
+	initialized     bool
+	isAuthenticated bool
 }
 
 //On : Dispatch an event handler to event listener
@@ -30,7 +31,7 @@ func (s *Socket) Emit(name string, payload messages.Payload) {
 
 //IsOk : returns the socket complete its pre-communicaion tasks
 func (s *Socket) IsOk() bool {
-	return s.initialized
+	return s.initialized && s.isAuthenticated
 }
 
 //GetID :
@@ -51,10 +52,10 @@ func (s *Socket) JoinMatchMaking() {
 //NewSocket : Constructor
 func NewSocket(conn *net.Conn) *Socket {
 	s := Socket{
-		events:      make(map[string]func(messages.Payload)),
-		id:          generateSocketID(),
-		conn:        conn,
-		initialized: false,
+		events:          make(map[string]func(messages.Payload)),
+		conn:            conn,
+		initialized:     false,
+		isAuthenticated: false,
 	}
 	go s.listen()
 	return &s
@@ -64,6 +65,11 @@ func (s *Socket) initialize(payload messages.Payload) {
 	val, ok := payload["RoomName"]
 	if ok {
 		s.Join(val)
+	}
+	val, ok = security.AuthenticateSocket(payload)
+	if ok {
+		s.id = val
+		s.isAuthenticated = true
 	}
 	s.initialized = true
 }
@@ -95,13 +101,7 @@ func (s *Socket) listen() {
 		if ok && s.IsOk() {
 			f(msg.Body)
 		} else {
-			fmt.Println("Event name doesn't found")
+			fmt.Println("Event  not found")
 		}
 	}
-}
-
-func generateSocketID() string {
-	b := make([]byte, 16)
-	rand.Read(b)
-	return fmt.Sprintf("%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
 }

@@ -10,14 +10,16 @@ import (
 
 //ConfigurationStruct :
 type ConfigurationStruct struct {
-	HOST string
-	PORT string
+	HOST         string
+	PORT         string
+	IsAuthActive bool
 }
 
 //Config :
 var Config *ConfigurationStruct = &ConfigurationStruct{
-	HOST: "localhost",
-	PORT: "8080",
+	HOST:         "localhost",
+	PORT:         "8080",
+	IsAuthActive: false,
 }
 
 var cb func(*sockets.Socket)

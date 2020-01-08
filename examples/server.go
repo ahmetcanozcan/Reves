@@ -6,6 +6,7 @@ import (
 
 	"github.com/ahmetcanozcan/reves"
 	"github.com/ahmetcanozcan/reves/engines"
+	"github.com/ahmetcanozcan/reves/security"
 	"github.com/ahmetcanozcan/reves/sockets"
 	"github.com/ahmetcanozcan/reves/sockets/messages"
 )
@@ -13,6 +14,9 @@ import (
 func main() {
 
 	reves.Config.PORT = "8080"
+
+	security.IsAuthenticationActive = false
+	security.EncryptionKey = "KEY"
 
 	engines.OnPlayerInvoked(func(p *engines.Player) {
 		fmt.Println("a Player invoked")
