@@ -14,6 +14,11 @@ const (
 	GAME RoomType = 3
 )
 
+var (
+	//MatchMakingRoomSize :
+	MatchMakingRoomSize int = 2
+)
+
 //Room : is an abstraction to group sockets
 type Room struct {
 	Name    string
@@ -83,7 +88,7 @@ func createMatchMakingRoom() {
 	r := Room{
 		Name:    "MatchMaking-" + string(matchMakingRoomCount),
 		Sockets: make(SocketList, 0),
-		limit:   2,
+		limit:   MatchMakingRoomSize,
 		Type:    MATCHMAKING,
 	}
 	rooms = append(rooms, &r)

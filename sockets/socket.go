@@ -1,9 +1,7 @@
 package sockets
 
 import (
-	"bufio"
 	"fmt"
-	"net"
 
 	"github.com/ahmetcanozcan/reves/security"
 	"github.com/ahmetcanozcan/reves/sockets/messages"
@@ -13,7 +11,7 @@ import (
 type Socket struct {
 	events          map[string]func(messages.Payload)
 	id              string
-	conn            *net.Conn
+	wr              WriterReader
 	initialized     bool
 	isAuthenticated bool
 }
@@ -26,12 +24,12 @@ func (s *Socket) On(name string, handler func(messages.Payload)) {
 //Emit : Send payload to client
 func (s *Socket) Emit(name string, payload messages.Payload) {
 	message := fmt.Sprintf("%s;%s\n", name, payload.Compile())
-	fmt.Fprintf(*s.conn, message)
+	s.wr.Write(message)
 }
 
-//RemoveEvent : 
+//RemoveEvent :
 func (s *Socket) RemoveEvent(name string) {
-	delete(s.events,name)
+	delete(s.events, name)
 }
 
 //IsOk : returns the socket complete its pre-communicaion tasks
@@ -55,13 +53,14 @@ func (s *Socket) JoinMatchMaking() {
 }
 
 //NewSocket : Constructor
-func NewSocket(conn *net.Conn) *Socket {
+func NewSocket(wr WriterReader) *Socket {
 	s := Socket{
 		events:          make(map[string]func(messages.Payload)),
-		conn:            conn,
+		wr:              wr,
 		initialized:     false,
 		isAuthenticated: false,
 	}
+
 	go s.listen()
 	return &s
 }
@@ -84,11 +83,12 @@ func (s *Socket) matchMaking(payload messages.Payload) {
 }
 
 func (s *Socket) listen() {
-	reader := bufio.NewReader(*s.conn)
 	for {
-		text, err := reader.ReadString('\n')
+		text, err := s.wr.Read()
+		fmt.Println("Readed that : ", text)
 		if err != nil {
-			continue
+			fmt.Println("Socket Error:", err)
+			break
 		}
 		msg, err := messages.NewMessage(text)
 		if err != nil {
