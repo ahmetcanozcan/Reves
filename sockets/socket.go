@@ -29,6 +29,11 @@ func (s *Socket) Emit(name string, payload messages.Payload) {
 	fmt.Fprintf(*s.conn, message)
 }
 
+//RemoveEvent : 
+func (s *Socket) RemoveEvent(name string) {
+	delete(s.events,name)
+}
+
 //IsOk : returns the socket complete its pre-communicaion tasks
 func (s *Socket) IsOk() bool {
 	return s.initialized && s.isAuthenticated
