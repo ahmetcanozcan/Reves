@@ -45,14 +45,21 @@ func (s Socket) GetID() string {
 
 //Join :
 func (s *Socket) Join(name string) {
-	r := GetRoom(name)
-	r.AddSocket(s)
-	s.room = r
+	if s.room == nil {
+		r := GetRoom(name)
+		r.AddSocket(s)
+		s.room = r
+	}
 }
 
 //JoinMatchMaking :
 func (s *Socket) JoinMatchMaking() {
-	GetMatchMakingRoom().AddSocket(s)
+	if s.room == nil {
+		r := GetMatchMakingRoom()
+		r.AddSocket(s)
+		s.room = r
+	}
+
 }
 
 //Destroy :
