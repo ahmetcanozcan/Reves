@@ -29,10 +29,14 @@ func main() {
 		fmt.Println("a MatchMaking room is filled...")
 		engine := engines.NewEngine(r)
 		engine.AddEntity(&Clock{time: 0})
+		engine.OnDestroy(func() {
+			fmt.Println("Engine destroyed...")
+		})
 		engine.Start()
 	})
 
 	reves.HandleNewSocket(func(socket *sockets.Socket) {
+		fmt.Println("Socket crated...")
 		socket.On("Hello", func(payload messages.Payload) {
 			for k, v := range payload {
 				fmt.Println(k, v)

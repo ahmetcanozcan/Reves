@@ -71,6 +71,11 @@ func GetRoom(name string) *Room {
 	return GetRoom(name)
 }
 
+//IsInactive :
+func (r *Room) IsInactive() bool {
+	return len(r.Sockets) <= 0
+}
+
 //GetMatchMakingRoom :
 func GetMatchMakingRoom() *Room {
 	for i, val := range rooms {

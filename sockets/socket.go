@@ -14,6 +14,7 @@ type Socket struct {
 	wr              WriterReader
 	initialized     bool
 	isAuthenticated bool
+	room            *Room
 }
 
 //On : Dispatch an event handler to event listener
@@ -44,12 +45,23 @@ func (s Socket) GetID() string {
 
 //Join :
 func (s *Socket) Join(name string) {
-	GetRoom(name).AddSocket(s)
+	r := GetRoom(name)
+	r.AddSocket(s)
+	s.room = r
 }
 
 //JoinMatchMaking :
 func (s *Socket) JoinMatchMaking() {
 	GetMatchMakingRoom().AddSocket(s)
+}
+
+//Destroy :
+func (s *Socket) Destroy() {
+}
+
+//Equals :
+func (s *Socket) Equals(sck *Socket) bool {
+	return s.GetID() == sck.GetID()
 }
 
 //NewSocket : Constructor
@@ -87,7 +99,7 @@ func (s *Socket) listen() {
 		text, err := s.wr.Read()
 		fmt.Println("Readed that : ", text)
 		if err != nil {
-			fmt.Println("Socket Error:", err)
+			s.Destroy()
 			break
 		}
 		msg, err := messages.NewMessage(text)

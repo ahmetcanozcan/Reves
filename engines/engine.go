@@ -8,15 +8,17 @@ import (
 
 //Engine :
 type Engine struct {
-	players  PlayerList
-	entities EntityList
-	UR       int
+	players   PlayerList
+	entities  EntityList
+	UR        int
+	room      *sockets.Room
+	onDestroy func()
 }
 
 //NewEngine :
 func NewEngine(room *sockets.Room) *Engine {
 	room.Type = sockets.GAME
-	e := &Engine{UR: 20, entities: make(EntityList, 0)}
+	e := &Engine{UR: 20, entities: make(EntityList, 0), room: room, onDestroy: func() {}}
 	e.players = make(PlayerList, 0)
 	for _, socket := range room.Sockets {
 		p := NewPlayer(socket)
@@ -30,10 +32,19 @@ func (e *Engine) AddEntity(entity Entity) {
 	e.entities.Push(entity)
 }
 
-func (e *Engine) check() {
+//OnDestroy :
+func (e *Engine) OnDestroy(f func()) {
+	e.onDestroy = f
+}
+
+func (e *Engine) check() bool {
 	for _, entity := range e.entities {
 		entity.Check()
 	}
+	if e.room.IsInactive() {
+		return false
+	}
+	return true
 }
 
 func (e *Engine) update(deltaTime int64) {
@@ -48,6 +59,11 @@ func (e *Engine) share() {
 	}
 }
 
+func (e *Engine) destroy() {
+	e.onDestroy()
+
+}
+
 //Start :
 func (e *Engine) Start() {
 	go func() {
@@ -57,11 +73,15 @@ func (e *Engine) Start() {
 		start := time.Now()
 		for {
 			time.Sleep(time.Duration(1000/e.UR) * time.Millisecond)
-			e.check()
+			if !e.check() {
+				break
+			}
 			delta := time.Since(start)
 			e.update(delta.Milliseconds())
 			e.share()
 			start = time.Now()
 		}
+
+		e.destroy()
 	}()
 }

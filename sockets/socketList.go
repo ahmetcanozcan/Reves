@@ -17,6 +17,20 @@ func (l *SocketList) Remove(i int) {
 	(*l) = (*l)[:len((*l))-1]
 }
 
+//RemoveElement : Remove a socket from given index
+func (l *SocketList) RemoveElement(el *Socket) {
+	var i int
+	for ind, sck := range *l {
+		if sck.Equals(el) {
+			i = ind
+			break
+		}
+	}
+	(*l)[i] = (*l)[len((*l))-1]
+	(*l)[len((*l))-1] = &Socket{}
+	(*l) = (*l)[:len((*l))-1]
+}
+
 //Print : Display all sockets in the list
 func (l SocketList) Print() {
 	fmt.Println()
